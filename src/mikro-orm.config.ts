@@ -3,15 +3,15 @@
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
 import { __prod__ } from "./constants";
-import { Course } from "./entities/course";
-import { User } from "./entities/User";
+import { Course } from "./entities/Course";
+import { AppUser } from "./entities/AppUser";
 
 export default {
   migrations: {
     path: path.join(__dirname, './migrations'), // path to the folder with migrations
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
-  entities: [Course, User],
+  entities: [AppUser, Course],
   dbName: 'carnadb',
   user: 'postgres',
   password: 'postgres',

@@ -54,6 +54,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
     return next();
   } catch (err) {
+    console.error(err.message);
     return res.status(401).json({
       status: 401,
       message: "Token is invalid!"

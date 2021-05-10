@@ -6,7 +6,7 @@ enum UserRole {
 }
 
 @Entity()
-export class User {
+export class AppUser {
   @PrimaryKey()
   id!: number;
 
