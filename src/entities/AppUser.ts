@@ -1,7 +1,8 @@
 import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
 
-enum UserRole {
+export enum UserRole {
   User = 'user',
+  Teacher = 'teacher',
   Admin = 'admin',
 }
 

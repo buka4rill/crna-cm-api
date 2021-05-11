@@ -13,7 +13,7 @@ router.get("/api/user", auth, getUserData);
 // Admin create user route
 router.post(
   "/api/user", 
-    
+
     auth,
     [
       check('name', "Name is required!").not().isEmpty(),
@@ -25,9 +25,9 @@ router.post(
 );
 
 // Admin update user route
-router.put("/api/user/:id", updateUserData);
+router.put("/api/user/:userId", auth, updateUserData);
 
 // Admin delete user route
-router.delete("/api/user/:id", auth, deleteUserData);
+router.delete("/api/user/:userId", auth, deleteUserData);
 
 export { router as usersRouter }

@@ -10,6 +10,16 @@ import microConfig from '../mikro-orm.config';
 // import { IGetUserAuthInfo } from '../middleware/auth';
 
 
+// type UserField = {
+//   name?: string;
+//   school?: string, 
+//   city?: string, 
+//   district?: string, 
+//   country?: string, 
+//   role?: UserRole[],
+// }
+
+
 // @route     GET /api/user
 // @desc      Admin gets all users
 // @access    Private
@@ -32,7 +42,7 @@ export const getUserData = async (req: Request, res: Response) => {
 }
 
 // @route     POST /api/user
-// @desc      Admin creates
+// @desc      Admin creates user
 // @access    Private
 export const createUser = async (req: Request, res: Response) => {
   // Validate body 
@@ -120,27 +130,102 @@ export const createUser = async (req: Request, res: Response) => {
   }
 }
 
-// @route     GET /api/user
-// @desc      Admin gets all users
+// @route     PUT /api/user/:id
+// @desc      User and Admin can update user's details
 // @access    Private
 export const updateUserData = async (req: Request, res: Response) => {
-  try {
-    
-    const orm = await MikroORM.init(microConfig);
-    const user = await orm.em.findOne(AppUser, { id: req.user.id });
+  
+  const { name, school, city, district, country, role} = req.body
 
-    // return
-    return res.json({
-      status: 200,
-      message: "User gotten successfully!",
-      data: { user }
+  // const userFields: UserField = {};
+
+  try {
+    // User id params
+    const { userId } = req.params;
+
+    // Admin User
+    const orm = await MikroORM.init(microConfig);
+    const users = await orm.em.find(AppUser, { id: { $in: [req.user.id, Number(userId)]} });
+    const user = await orm.em.findOne(AppUser, { id: Number(userId) });
+
+
+    if (!users) {
+      return res.status(404).json({
+        statusCode: 404,
+        message: "Sorry, user not found!",
+      })
+    }
+
+    // Get User Role
+    let userRole: any = [];
+    users.map(user => {
+      for (let key in user.role) {
+        let user_role = user?.role[key];
+        userRole.push(user_role);
+      } 
     });
+    
+    let is_admin = userRole.includes('admin');
+    let is_user = userRole.includes('user');
+    let is_teacher = userRole.includes('teacher');
+
+    if (!is_admin && !is_user && !is_teacher) {
+      res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorised! You can't update user!"
+      });
+    } else if (is_admin) {
+   
+      // Check for user
+      if (!user) return res.status(404).json({ message: "User not found!"});
+
+      // update user as an admin
+      user.name = name;
+      user.school = school;
+      user.city = city;
+      user.country = country;
+      user.district = district;
+      user.role = role;
+
+      // Save to db
+      await orm.em.persistAndFlush(user);
+    } else  {
+      // Check for user
+      if (!user) return res.status(404).json({ message: "User not found!"});
+
+      // Update user as a normal user
+      user.name = name;
+      user.school = school;
+      user.city = city;
+      user.country = country;
+      user.district = district;
+    
+      // Save to db
+      await orm.em.persistAndFlush(user);
+    }
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: `user of id ${userId} updated successfully!`,
+      data: {
+        user: {
+          name: user?.name,
+          school: user?.school,
+          city: user?.city,
+          country: user?.country,
+          district: user?.district,
+          role: user?.role,
+        }
+      },
+    });
+
+    
   } catch (err) {
     console.log(err.message);
     return res.status(500).send("Server Error");
   }
 }
-// @route     GET /api/user
+// @route     DELETE /api/user
 // @desc      Admin gets all users
 // @access    Private
 
