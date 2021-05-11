@@ -57,7 +57,7 @@ export const createUser = async (req: Request, res: Response) => {
     const orm = await MikroORM.init(microConfig);
     const adminUser = await orm.em.findOne(AppUser, { id: req.user.id });
 
-    // console.log("USER_ROLE: ", user?.role?.values());
+    // Check user role
     let userRole = "";
     for (let key in adminUser?.role) {
       let user_role = adminUser?.role[key];
@@ -71,14 +71,14 @@ export const createUser = async (req: Request, res: Response) => {
       })
     }
 
-    // Create user
+    // if User is admin...create user
     const newUser = orm.em.create(AppUser, {
       name,
       email,
       password,
-    })
+    });
     
-
+    // Encrypt password
     const salt = await bcrypt.genSalt(10);
 
     newUser.password = await bcrypt.hash(password, salt);
@@ -91,6 +91,7 @@ export const createUser = async (req: Request, res: Response) => {
       }
     }
 
+    // Return payload
     return jwt.sign(
       payload,
       JWT.SECRET_KEY,
@@ -113,13 +114,6 @@ export const createUser = async (req: Request, res: Response) => {
         })
       }
     )
-
-    // return
-    // return res.json({
-    //   status: 200,
-    //   message: "User gotten successfully!",
-    //   data: { user }
-    // });
   } catch (err) {
     console.log(err.message);
     return res.status(500).send("Server Error");
