@@ -70,6 +70,7 @@ export const loginUser = async (req: Request, res: Response) => {
         if (err) throw err;
 
         res.json({
+          statusCode: 200,
           message: "Logged in successfully!",
           data:{
             user: {
