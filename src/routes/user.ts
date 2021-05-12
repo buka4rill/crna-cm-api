@@ -5,10 +5,23 @@ import { check } from 'express-validator';
 const router = Router();
 
 // User controller
-import { createUser, deleteUserData, getUserData, updateUserData }  from '../controllers/usersController';
+import { 
+  createUser, 
+  deleteUserData, 
+  getAllUsersData, 
+  getSingleUserData, 
+  getUserData, 
+  updateUserData 
+}  from '../controllers/usersController';
 
-// Admin create user route
+// Admin Get logged in user route
 router.get("/api/user", auth, getUserData);
+
+// Admin gets user by id
+router.get("/api/user/all", auth, getAllUsersData);
+
+// Admin gets user by id
+router.get("/api/user/:userId", auth, getSingleUserData);
 
 // Admin create user route
 router.post(

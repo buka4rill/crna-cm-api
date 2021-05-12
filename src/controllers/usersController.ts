@@ -7,21 +7,10 @@ import { validationResult } from "express-validator";
 // import { userInfo } from 'os';
 import { MikroORM } from "@mikro-orm/core";
 import microConfig from '../mikro-orm.config';
-// import { IGetUserAuthInfo } from '../middleware/auth';
-
-
-// type UserField = {
-//   name?: string;
-//   school?: string, 
-//   city?: string, 
-//   district?: string, 
-//   country?: string, 
-//   role?: UserRole[],
-// }
 
 
 // @route     GET /api/user
-// @desc      Admin gets all users
+// @desc      Admin gets logged in user
 // @access    Private
 export const getUserData = async (req: Request, res: Response) => {
   try {
@@ -35,6 +24,139 @@ export const getUserData = async (req: Request, res: Response) => {
       message: "User gotten successfully!",
       data: { user }
     });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).send("Server Error");
+  }
+}
+
+// @route     GET /api/user/all
+// @desc      Admin gets all users (with query strings)
+// @access    Private
+export const getAllUsersData = async (req: Request, res: Response) => {
+  try {
+    // Admin User
+    const orm = await MikroORM.init(microConfig);
+    const adminUser = await orm.em.findOne(AppUser, { id: req.user.id });
+
+    const { school, district, country, city } = req.query;
+
+    // Check user role
+    let userRole = "";
+    for (let key in adminUser?.role) {
+      let user_role = adminUser?.role[key];
+      userRole = user_role;
+    }
+
+    if (userRole !== "admin") {
+      res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorised! You can't get users!"
+      });
+    }
+
+    // Search with query strings
+    const query: any = { };
+
+    if (school) query.school = school;
+    if (district) query.district = district;
+    if (country) query.country = country;
+    if (city) query.city = city;
+
+    const users = await orm.em.find(AppUser, query);
+
+    // Check if users object is empty
+    if (!users)
+      return res.status(404)
+        .json({
+          statusCode: 404,
+          message: "Users not found!"
+        });
+
+    return res.status(200)
+      .json({
+        statusCode: 200,
+        message: "Users data gotten successfully!",
+        data: { 
+          users: users.map(user => {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              country: user.country,
+              city: user.city,
+              district: user.district, 
+              school: user.school,
+              role: user.role,
+              isAdmin: user.isAdmin,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt
+            }
+          }) 
+        }
+      });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).send("Server Error");
+  }
+}
+
+// @route     GET /api/user/:id
+// @desc      Admin gets single user
+// @access    Private
+export const getSingleUserData = async (req: Request, res: Response) => {
+  // user id params
+  const { userId } = req.params; 
+
+  try {
+    // Admin User
+    const orm = await MikroORM.init(microConfig);
+    const adminUser = await orm.em.findOne(AppUser, { id: req.user.id });
+
+    // Check user role
+    let userRole = "";
+    for (let key in adminUser?.role) {
+      let user_role = adminUser?.role[key];
+      userRole = user_role;
+    }
+
+    if (userRole !== "admin") {
+      res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorised! You can't get users!"
+      });
+    }
+
+    const user = await orm.em.findOne(AppUser, { id: Number(userId) });
+
+    if (!user)
+      return res.status(404)
+        .json({
+          statusCode: 404,
+          message: "User not found!"
+        });
+
+    // return data
+    return res.status(200)
+      .json({
+        statusCode: 200,
+        message: "Users data gotten successfully!",
+        data: { 
+          users: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            country: user.country,
+            city: user.city,
+            district: user.district, 
+            school: user.school,
+            role: user.role,
+            isAdmin: user.isAdmin,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          }
+        }
+      });
   } catch (err) {
     console.log(err.message);
     return res.status(500).send("Server Error");
@@ -222,24 +344,49 @@ export const updateUserData = async (req: Request, res: Response) => {
     
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: "Server Error",
+      message: err.message,
+    });
   }
 }
-// @route     DELETE /api/user
-// @desc      Admin gets all users
-// @access    Private
 
+// @route     DELETE /api/user/:id
+// @desc      Admin deletes all users
+// @access    Private
 export const deleteUserData = async (req: Request, res: Response) => {
+
+  const { userId } = req.params;
+
   try {
     
+    // Admin User
     const orm = await MikroORM.init(microConfig);
-    const user = await orm.em.findOne(AppUser, { id: req.user.id });
+    const adminUser = await orm.em.findOne(AppUser, { id: req.user.id });
+
+    // Check user role
+    let userRole = "";
+    for (let key in adminUser?.role) {
+      let user_role = adminUser?.role[key];
+      userRole = user_role;
+    }
+
+    if (userRole !== "admin") {
+      res.status(401).json({
+        statusCode: 401,
+        message: "Unauthorised! You can't delete a user!"
+      })
+    }
+
+    // else...if authorized
+    // delete user
+    await orm.em.nativeDelete(AppUser, { id: Number(userId) });
 
     // return
     return res.json({
       status: 200,
-      message: "User gotten successfully!",
-      data: { user }
+      message: `User of id ${userId} deleted successfully!`,
     });
   } catch (err) {
     console.log(err.message);

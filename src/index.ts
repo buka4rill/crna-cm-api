@@ -38,7 +38,6 @@ const main = async () => {
 
   // Input some data in db
   let admin = await orm.em.findOne(AppUser, { email: "admin@admin.com" });
-  console.log(admin);
 
   // await orm.em.nativeDelete(AppUser, { id: 3 });
 
@@ -56,27 +55,7 @@ const main = async () => {
     console.log("Admin user created...");
     
     await orm.em.persistAndFlush(admin);
-
   }
-
-  // const course = orm.em.create(Course, {
-  //   title: "The second course",
-  //   shortDescription: "Some test short description",
-  //   fullDescription: "Some test full description",
-  // });
-  // await orm.em.persistAndFlush(course);
-  // console.log(course);
-  // const user = orm.em.create(AppUser, {
-  //   name: "Oge A",
-  //   email: "oge12345@gmail.com",
-  //   password: "12345",
-  //   district: "Lagos",
-  //   city: "Ikorodu",
-  //   country: "Nigeria",
-  //   school: "CU",  
-  // })
-  // await orm.em.persistAndFlush(user);
-  
 };
 
 main().catch(err => console.error(err));
