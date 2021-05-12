@@ -26,7 +26,11 @@ export const getUserData = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: err.message,
+      message: "Server Error",
+    });
   }
 }
 
@@ -97,7 +101,11 @@ export const getAllUsersData = async (req: Request, res: Response) => {
       });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: err.message,
+      message: "Server Error",
+    });
   }
 }
 
@@ -159,7 +167,11 @@ export const getSingleUserData = async (req: Request, res: Response) => {
       });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: err.message,
+      message: "Server Error",
+    });
   }
 }
 
@@ -248,7 +260,11 @@ export const createUser = async (req: Request, res: Response) => {
     )
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: err.message,
+      message: "Server Error",
+    });
   }
 }
 
@@ -346,8 +362,8 @@ export const updateUserData = async (req: Request, res: Response) => {
     console.log(err.message);
     return res.status(500).send({
       statusCode: 500,
-      error: "Server Error",
-      message: err.message,
+      error: err.message,
+      message: "Server Error",
     });
   }
 }
@@ -390,6 +406,10 @@ export const deleteUserData = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).send("Server Error");
+    return res.status(500).send({
+      statusCode: 500,
+      error: err.message,
+      message: "Server Error",
+    });
   }
 }
