@@ -9,7 +9,8 @@ import { authRouter }  from './routes/auth';
 import bcrypt from "bcryptjs";
 import { bcrypt as b } from './config';
 import { courseRouter } from "./routes/course";
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 const main = async () => {
   // connect to PG database
@@ -52,7 +53,7 @@ const main = async () => {
     let admin = await orm.em.create(AppUser, {
       name: "Super Admin",
       email: "admin@admin.com",
-      password: await (await bcrypt.hash(b.ADMIN_PSWD, 10)).trim(),
+      password: await bcrypt.hash(b.ADMIN_PSWD, 10),
       role: ["admin"],
       isAdmin: true,
     });
