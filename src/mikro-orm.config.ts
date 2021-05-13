@@ -12,6 +12,7 @@ dotenv.config();
 export default {
   migrations: {
     path: path.join(__dirname, './migrations'), // path to the folder with migrations
+    disableForeignKeys: false,
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
   driverOptions: {
