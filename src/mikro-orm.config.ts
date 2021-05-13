@@ -5,6 +5,7 @@ import path from "path";
 import { __prod__ } from "./constants";
 import { Course } from "./entities/Course";
 import { AppUser } from "./entities/AppUser";
+import { database as db } from './config';
 
 export default {
   migrations: {
@@ -17,4 +18,5 @@ export default {
   password: 'postgres',
   debug: !__prod__,
   type: 'postgresql',
+  clientUrl: __prod__ ? db.DATABASE_URL : undefined,
 } as Parameters<typeof MikroORM.init>[0];

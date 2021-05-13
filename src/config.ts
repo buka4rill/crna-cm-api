@@ -17,8 +17,8 @@ const bcrypt = {
   ADMIN_PSWD: `${process.env.ADMIN_PSWD}`,
 }
 
-// const database = {
-//     DATABASE_CONNECTION_STRING: `${process.env.DATABASE_CONNECTION_STRING}`
-// }
+const database = {
+  DATABASE_URL: `${process.env.DATABASE_URL}`,
+}
 
-export { server, jwt, bcrypt };
+export { server, jwt, bcrypt, database };
