@@ -52,7 +52,7 @@ const main = async () => {
     let admin = await orm.em.create(AppUser, {
       name: "Super Admin",
       email: "admin@admin.com",
-      password: await bcrypt.hash(b.ADMIN_PSWD, 10),
+      password: await (await bcrypt.hash(b.ADMIN_PSWD, 10)).trim(),
       role: ["admin"],
       isAdmin: true,
     });

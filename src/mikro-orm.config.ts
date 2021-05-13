@@ -16,9 +16,9 @@ export default {
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
   driverOptions: {
-    connection: {
+    connection: __prod__ ? {
       ssl: { rejectUnauthorized: false }
-    }
+    } : { }
   },
   entities: [AppUser, Course],
   dbName: __prod__ ? process.env.DATABASE : 'carnadb',
