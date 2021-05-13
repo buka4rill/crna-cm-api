@@ -26,14 +26,12 @@ router.get("/api/user/:userId", auth, getSingleUserData);
 // Admin create user route
 router.post(
   "/api/user", 
-
-    auth,
-    [
-      check('name', "Name is required!").not().isEmpty(),
-      check('email', 'Please enter a valid email').isEmail(),
-      check("password", "Please enter a valid password").exists(),
-    ],
-
+  auth,
+  [
+    check('name', "Name is required!").not().isEmpty(),
+    check('email', 'Please enter a valid email').isEmail(),
+    check("password", "Please enter a valid password").exists(),
+  ],
   createUser
 );
 

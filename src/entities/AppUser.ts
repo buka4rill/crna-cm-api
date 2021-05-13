@@ -11,8 +11,8 @@ export class AppUser {
   @PrimaryKey()
   id!: number;
 
-  @Property({ type: "text" })
-  name!: string;
+  @Property({ type: "text", nullable: true })
+  name?: string;
 
   @Property({ type: "text", unique: true })
   email!: string;

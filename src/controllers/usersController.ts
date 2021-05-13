@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { jwt as JWT } from "../config";
 import { validationResult } from "express-validator";
-// import { userInfo } from 'os';
 import { MikroORM } from "@mikro-orm/core";
 import microConfig from '../mikro-orm.config';
 
@@ -20,7 +19,7 @@ export const getUserData = async (req: Request, res: Response) => {
 
     // return
     return res.json({
-      status: 200,
+      statusCode: 200,
       message: "User gotten successfully!",
       data: { user }
     });
@@ -109,7 +108,7 @@ export const getAllUsersData = async (req: Request, res: Response) => {
   }
 }
 
-// @route     GET /api/user/:id
+// @route     GET /api/user/:userId
 // @desc      Admin gets single user
 // @access    Private
 export const getSingleUserData = async (req: Request, res: Response) => {
@@ -194,7 +193,6 @@ export const createUser = async (req: Request, res: Response) => {
   // else...
   const { name, email, password } = req.body;
   
-  
   try {
     
     // Admin User
@@ -268,14 +266,12 @@ export const createUser = async (req: Request, res: Response) => {
   }
 }
 
-// @route     PUT /api/user/:id
+// @route     PUT /api/user/:userId
 // @desc      User and Admin can update user's details
 // @access    Private
 export const updateUserData = async (req: Request, res: Response) => {
   
   const { name, school, city, district, country, role} = req.body
-
-  // const userFields: UserField = {};
 
   try {
     // User id params
@@ -285,7 +281,6 @@ export const updateUserData = async (req: Request, res: Response) => {
     const orm = await MikroORM.init(microConfig);
     const users = await orm.em.find(AppUser, { id: { $in: [req.user.id, Number(userId)]} });
     const user = await orm.em.findOne(AppUser, { id: Number(userId) });
-
 
     if (!users) {
       return res.status(404).json({
@@ -347,6 +342,7 @@ export const updateUserData = async (req: Request, res: Response) => {
       message: `user of id ${userId} updated successfully!`,
       data: {
         user: {
+          id: user!.id,
           name: user?.name,
           school: user?.school,
           city: user?.city,
@@ -356,8 +352,6 @@ export const updateUserData = async (req: Request, res: Response) => {
         }
       },
     });
-
-    
   } catch (err) {
     console.log(err.message);
     return res.status(500).send({
@@ -368,7 +362,7 @@ export const updateUserData = async (req: Request, res: Response) => {
   }
 }
 
-// @route     DELETE /api/user/:id
+// @route     DELETE /api/user/:userId
 // @desc      Admin deletes all users
 // @access    Private
 export const deleteUserData = async (req: Request, res: Response) => {
@@ -380,6 +374,7 @@ export const deleteUserData = async (req: Request, res: Response) => {
     // Admin User
     const orm = await MikroORM.init(microConfig);
     const adminUser = await orm.em.findOne(AppUser, { id: req.user.id });
+    const user = await orm.em.findOne(AppUser, { id: Number(userId) });
 
     // Check user role
     let userRole = "";
@@ -397,6 +392,13 @@ export const deleteUserData = async (req: Request, res: Response) => {
 
     // else...if authorized
     // delete user
+
+    if (!user) return res.status(404).send({
+      statusCode: 404, 
+      message: "User not found!"
+    });
+
+    // Delete user
     await orm.em.nativeDelete(AppUser, { id: Number(userId) });
 
     // return

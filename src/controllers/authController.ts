@@ -3,12 +3,9 @@ import { AppUser } from "../entities/AppUser";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
-// import { userInfo } from 'os';
 import { MikroORM } from "@mikro-orm/core";
 import microConfig from '../mikro-orm.config';
 import { jwt as JWT } from '../config';
-// import { MyContext } from '../types';
-// import { IGetUserAuthInfo } from '../middleware/auth';
 
 
 // @route     POST /api/auth/login

@@ -2,20 +2,12 @@
 
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-
-// const { SECRET }: jwt.Secret = process.env;
 import { jwt as JWT } from '../config';
-
-
-// type IDecoded = {
-//   user: string | Object;
-//   // verify: (token: string, secretOrPublicKey: jwt.Secret, options?: jwt.VerifyOptions | undefined) => void;
-// }
 
 declare global {
   namespace Express {
     export interface Request {
-        user: UserType; 
+      user: UserType; 
     }
   }
 }
@@ -25,11 +17,6 @@ type UserType = {
   email: string;
   password: string;
 }
-
-// export interface IGetUserAuthInfo extends Request {
-//   user?: UserType;
-// }
-
 
 
 interface Token { user: UserType }

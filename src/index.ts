@@ -8,6 +8,7 @@ import { usersRouter }  from './routes/user';
 import { authRouter }  from './routes/auth';
 import bcrypt from "bcryptjs";
 import { bcrypt as b } from './config';
+import { courseRouter } from "./routes/course";
 
 
 const main = async () => {
@@ -31,6 +32,7 @@ const main = async () => {
   // Inject routes
   app.use(usersRouter);
   app.use(authRouter);
+  app.use(courseRouter);
 
   app.listen(4000, () => {
     console.log("Server started on localhost:4000");
