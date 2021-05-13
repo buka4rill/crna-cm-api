@@ -14,6 +14,11 @@ export default {
     path: path.join(__dirname, './migrations'), // path to the folder with migrations
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
+  driverOptions: {
+    connection: {
+      ssl: { rejectUnauthorized: false }
+    }
+  },
   entities: [AppUser, Course],
   dbName: __prod__ ? process.env.DATABASE : 'carnadb',
   user: __prod__ ? process.env.USER : 'postgres',
