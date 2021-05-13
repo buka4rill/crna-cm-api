@@ -34,8 +34,10 @@ const main = async () => {
   app.use(authRouter);
   app.use(courseRouter);
 
-  app.listen(4000, () => {
-    console.log("Server started on localhost:4000");
+  const port = process.env.PORT || 4000;
+
+  app.listen(port, () => {
+    console.log(`Server started on localhost:${port}`);
   })
 
   // Input some data in db
