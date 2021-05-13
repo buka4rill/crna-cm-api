@@ -9,8 +9,6 @@ import { authRouter }  from './routes/auth';
 import bcrypt from "bcryptjs";
 import { bcrypt as b } from './config';
 import { courseRouter } from "./routes/course";
-import dotenv from 'dotenv';
-dotenv.config();
 
 const main = async () => {
   // connect to PG database
