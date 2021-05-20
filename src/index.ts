@@ -9,6 +9,7 @@ import { authRouter }  from './routes/auth';
 import bcrypt from "bcryptjs";
 import { bcrypt as b } from './config';
 import { courseRouter } from "./routes/course";
+import cors from 'cors';
 
 const main = async () => {
   // connect to PG database
@@ -27,6 +28,14 @@ const main = async () => {
   app.get("/", (_, res) => {
     res.send("Hello from express!");
   })
+
+  const corsOptions = {
+    origin:'http://localhost:3000', 
+    credentials: true, //access-control-allow-credentials:true
+    optionSuccessStatus: 200
+  }
+
+  app.use(cors(corsOptions));
 
   // Inject routes
   app.use(usersRouter);

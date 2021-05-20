@@ -26,6 +26,7 @@
   "homepage": "https://github.com/buka4rill/crna-cm-api#readme",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
     "@types/express-session": "^1.17.3",
     "@types/jsonwebtoken": "^8.5.1",
@@ -40,6 +41,7 @@
     "@mikro-orm/migrations": "^4.5.4",
     "@mikro-orm/postgresql": "^4.5.4",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^9.0.1",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
